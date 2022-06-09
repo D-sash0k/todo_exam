@@ -1,0 +1,126 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: rgb(59, 66, 90);
+    font-family: sans-serif; 
+}
+.container {
+    margin: 100px auto;
+    min-height: 220px;
+    max-width: 550px;
+    background-color: white;
+    border: 0.5px solid rgb(0, 0, 0);
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 55px; 
+}
+.main-headar{
+    text-align: center;
+    margin-top: 20px;    
+}
+.main_title{
+    font-family: sans-serif;
+    font-weight: 900;
+}
+.title_next{
+    margin-top: 1px;
+}
+.add_btn {
+    width: 400px;
+    cursor: pointer; 
+}
+.write_text{
+    display: inline-block;
+    min-width: 460px; 
+    padding: 0;
+    color: aliceblue;
+    background-color: rgb(59, 66, 90);
+}
+.write_text, .add_btn{
+    display: block;
+    margin: 20px auto ;
+    border: 2px solid rgb(76, 76, 183);
+    border-radius: 10px;
+    padding: 12px;
+}
+:hover.write_text, :hover.add_btn{
+    border: 2px solid rgb(0, 255, 221);
+}
+.add_btn{
+    background-color: rgb(59, 66, 90);
+    color: aliceblue;
+    font-weight: 900;
+    margin: -5px auto;
+}
+.todo_item{
+    list-style-type: none;
+ /* padding: 14px 45px 14px 25px; */
+    font-family: sans-serif;
+    font-weight: bolder;
+    border: 0.5px solid rgb(0, 0, 0);
+    border-radius: 10px;
+    margin: 10px 10px  0 -30px;
+    position: relative;
+    display: flex;  
+    position: relative;  
+}
+.status_color{
+    display: flex;
+    position: absolute;
+    width: 100px;
+    height: 25px;
+    border-radius: 50px;
+    background-color: rgb(136, 136, 136);
+    right: 63px;
+    top: 9px;
+    text-align: center;
+    color: azure;
+    padding: 5px 0 0 14px ;
+}
+.imagine{
+    display: flex;
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    right: 20px;
+    top: 8px;
+}
+:hover.imagine{
+    width: 32px;
+    height: 32px;
+}
+.test{
+    display: block;
+    width: 10px;
+    height: 10px;
+    border: 1px solid red;
+}
+.for_img{
+    position: relative;
+    width: 50px;
+    height: 50px;
+}
+.img_color{
+    position: absolute;
+    top: 8px;
+    left: 10px;
+    width: 35px;
+    height: 35px;
+}
+:hover.img_color{
+    width: 39px;
+    height: 39px; 
+    top: 6px;
+    left: 8px;
+}
+.select_status{ 
+    display: flex;
+    position: absolute;
+    top: 26px;
+    left: 28px;
+    display: none;
+}
+.text_task{
+    text-align-last: center;
+    margin-left: 15px;
+}
