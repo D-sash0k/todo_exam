@@ -1,9 +1,15 @@
 const img = document.querySelector(".for_img");
 const selects = document.querySelector(".select_status");
+const wrapperItems = document.querySelector(".wrapper_items");
+const writeInput = document.querySelector(".write_text");
+const buttonAdd = document.querySelector(".add_btn");
 
-const watchSelect = () => {
-    selects.style = "display: block";
+const watchSelect = (e) => {
+    if (e.target.closest(".todo_item")) {
+        selects.style = "display: block";
+    }
 };
+
 const changeStatusColor = (e) => {
     const img = document.querySelector(".img_color");
     const statusColor = document.querySelector(".status_color");
@@ -29,5 +35,56 @@ const changeStatusColor = (e) => {
     }
     ePrevious = e.target.value;
 };
+
+const enterCorrectItem = () => {
+    writeInput.classList.add("incorrect");
+    writeInput.placeholder = "ENTER A TASK...";
+    writeInput.value = "";
+};
+
+const displayMessages = () => {
+    wrapperItems.innerHTML += `<li class="todo_item">
+    <div class="for_img" id="img_src">
+        <img
+            class="img_color"
+            src="./img/grey.jpg"
+            alt="silver"
+        />
+    </div>
+    <form method="get">
+        <select class="select_status">
+            <option id="hold" value="hold">hold</option>
+            <option
+                id="in_progress"
+                value="in_progress"
+            >
+                in progress
+            </option>
+            <option id="done" value="done">done</option>
+        </select>
+    </form>
+    <p class="text_task">${writeInput.value}</p>
+    <div class="status_color">hold</div>
+    <img class="imagine" src="./img/img_basked.jpg" />
+</li>`;
+    writeInput.placeholder = "What do you want to do?...";
+    writeInput.classList.remove("incorrect");
+    writeInput.value = "";
+};
+
+const addItemWithButton = () => {
+    if (!writeInput.value.trim()) return enterCorrectItem();
+    displayMessages();
+};
+
+const addItemWithEnter = (e) => {
+    if (e.key === "Enter") {
+        if (!writeInput.value.trim()) return enterCorrectItem();
+        displayMessages();
+    }
+};
+
 selects.addEventListener("change", changeStatusColor);
-img.addEventListener("click", watchSelect);
+wrapperItems.addEventListener("click", watchSelect);
+writeInput.addEventListener("keypress", addItemWithEnter); // add item with Enter
+buttonAdd.addEventListener("click", addItemWithButton); //add item with button

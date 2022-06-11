@@ -119,4 +119,8 @@ body {
 .text_task {
     text-align-last: center;
     margin-left: 15px;
+    max-width: 290px;
+}
+.incorrect {
+    border: 2px solid red;
 }
