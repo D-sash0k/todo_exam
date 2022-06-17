@@ -1,39 +1,96 @@
-const img = document.querySelector(".for_img");
-const selects = document.querySelector(".select_status");
 const wrapperItems = document.querySelector(".wrapper_items");
 const writeInput = document.querySelector(".write_text");
 const buttonAdd = document.querySelector(".add_btn");
 
-const watchSelect = (e) => {
-    if (e.target.closest(".todo_item")) {
-        selects.style = "display: block";
+const statuses = {
+    hold: "hold",
+    progress: "progress",
+    done: "done",
+};
+
+const getImageValue = (status) => {
+    if (status === statuses.hold) {
+        return {
+            src: "./img/grey.jpg",
+            alt: "grey",
+            level: statuses.hold,
+            levelColor: "background-color: rgb(136, 136, 136)",
+        };
+    }
+    if (status === statuses.progress) {
+        return {
+            src: "./img/yellow.jpg",
+            alt: "yellow",
+            level: statuses.progress,
+            levelColor: "background-color: rgb(250, 160, 5)",
+        };
+    }
+    if (status === statuses.done) {
+        return {
+            src: "./img/green.jpg",
+            alt: "green",
+            level: statuses.done,
+            levelColor: "background-color: rgb(28, 201, 109)",
+        };
     }
 };
 
-const changeStatusColor = (e) => {
-    const img = document.querySelector(".img_color");
-    const statusColor = document.querySelector(".status_color");
-    let ePrevious;
+let todoList = [];
 
-    if (ePrevious != e.target.value) {
-        if (e.target.value === "in_progress") {
-            img.src = "./img/yellow.jpg";
-            statusColor.textContent = "in progress";
-            statusColor.style = "background-color: rgb(250, 160, 5);";
-        }
-        if (e.target.value === "hold") {
-            img.src = "./img/grey.jpg";
-            statusColor.textContent = "hold";
-            statusColor.style = "background-color: rgb(136, 136, 136);";
-        }
-        if (e.target.value === "done") {
-            img.src = "./img/green.jpg";
-            statusColor.textContent = "done";
-            statusColor.style = "background-color: rgb(28, 201, 109);";
-        }
-        selects.style = "display: none;";
+const displayTodoList = () => {
+    let display = "";
+    if (todoList.length === 0) wrapperItems.innerHTML = "";
+    todoList.forEach(function (item) {
+        const imageValue = getImageValue(item.status);
+        display += `
+        <li class="todo_item" id="${item.id}">
+            <div class="for_img">
+                <img class="img_color"
+                    src="${imageValue.src}"
+                    alt="${imageValue.alt}"/>    
+            </div>
+            <select class="select_status" onchange="changeItemStatus(this)">
+                <option ${item.status === statuses.hold ? "selected" : " "}
+                    value="${statuses.hold}">${statuses.hold}</option>
+                <option ${item.status === statuses.progress ? "selected" : " "} 
+                    value="${statuses.progress}">${statuses.progress}</option>
+                <option ${item.status === statuses.done ? "selected" : " "}  
+                    value="${statuses.done}">${statuses.done}</option> 
+            </select>
+            <p class="text_task">${item.name}</p>
+            <div class="status_color" style="${imageValue.levelColor}">
+                ${imageValue.level}</div>
+            <img class="imagine" src="./img/img_basked.jpg" />
+        </li>`;
+        wrapperItems.innerHTML = display;
+    });
+};
+
+const localAllStorage = {
+    setTodoList: (list) => {
+        localStorage.setItem("todo", JSON.stringify(list));
+    },
+    getTodoList: () => {
+        return JSON.parse(localStorage.getItem("todo"));
+    },
+};
+
+const changeItemStatus = (event) => {
+    const status = event.value;
+    const itemId = event.parentElement.id;
+    const currentItem = todoList.find((item) => {
+        return item.id === itemId;
+    });
+    !currentItem && alert("Not found currentItem");
+    currentItem.status = status;
+    displayTodoList();
+    localAllStorage.setTodoList(todoList);
+};
+
+const watchSelect = (e) => {
+    if (e.target.closest("li")) {
+        e.target.closest("li").children[1].style = "display: block";
     }
-    ePrevious = e.target.value;
 };
 
 const enterCorrectItem = () => {
@@ -42,49 +99,42 @@ const enterCorrectItem = () => {
     writeInput.value = "";
 };
 
-const displayMessages = () => {
-    wrapperItems.innerHTML += `<li class="todo_item">
-    <div class="for_img" id="img_src">
-        <img
-            class="img_color"
-            src="./img/grey.jpg"
-            alt="silver"
-        />
-    </div>
-    <form method="get">
-        <select class="select_status">
-            <option id="hold" value="hold">hold</option>
-            <option
-                id="in_progress"
-                value="in_progress"
-            >
-                in progress
-            </option>
-            <option id="done" value="done">done</option>
-        </select>
-    </form>
-    <p class="text_task">${writeInput.value}</p>
-    <div class="status_color">hold</div>
-    <img class="imagine" src="./img/img_basked.jpg" />
-</li>`;
-    writeInput.placeholder = "What do you want to do?...";
-    writeInput.classList.remove("incorrect");
-    writeInput.value = "";
-};
-
 const addItemWithButton = () => {
     if (!writeInput.value.trim()) return enterCorrectItem();
-    displayMessages();
+    writeInput.placeholder = "What do you want to do?...";
+    writeInput.classList.remove("incorrect");
+    const todoItem = {
+        name: writeInput.value,
+        status: statuses.hold,
+        id: "todoItem_" + Math.random(),
+    };
+    todoList.push(todoItem);
+    displayTodoList();
+    localAllStorage.setTodoList(todoList);
+    writeInput.value = "";
 };
-
 const addItemWithEnter = (e) => {
-    if (e.key === "Enter") {
-        if (!writeInput.value.trim()) return enterCorrectItem();
-        displayMessages();
-    }
+    e.key === "Enter" && addItemWithButton();
 };
 
-selects.addEventListener("change", changeStatusColor);
+const deleteItem = (e) => {
+    if (!e.target.closest(".imagine")) return;
+    const elementLi = e.target.parentElement;
+    let deleteItem = todoList.findIndex((item) => {
+        return item.id === elementLi.id;
+    });
+    elementLi.remove();
+    todoList.splice(deleteItem, 1);
+    localAllStorage.setTodoList(todoList);
+};
+
+// initial render
+if (localStorage.todo) {
+    todoList = localAllStorage.getTodoList();
+    displayTodoList();
+}
+
+wrapperItems.addEventListener("click", deleteItem); // delete item with image
 wrapperItems.addEventListener("click", watchSelect);
-writeInput.addEventListener("keypress", addItemWithEnter); // add item with Enter
 buttonAdd.addEventListener("click", addItemWithButton); //add item with button
+writeInput.addEventListener("keypress", addItemWithEnter); // add item with Enter

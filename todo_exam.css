@@ -28,7 +28,7 @@ body {
 .add_btn {
     display: block;
     background-color: rgb(59, 66, 90);
-    color: aliceblue;
+    color: rgb(255, 255, 255);
     font-weight: 900;
     margin: -15px auto 10px;
     width: 400px;
@@ -39,7 +39,7 @@ body {
 .write_text {
     display: block;
     width: 460px;
-    color: aliceblue;
+    color: rgb(255, 255, 255);
     background-color: rgb(59, 66, 90);
     margin: 20px auto;
     border: 2px solid rgb(76, 76, 183);
@@ -70,7 +70,7 @@ body {
     right: 63px;
     top: 9px;
     text-align: center;
-    color: azure;
+    color: rgb(255, 255, 255);
     padding: 5px 0 0 14px;
 }
 .imagine {
@@ -122,5 +122,5 @@ body {
     max-width: 290px;
 }
 .incorrect {
-    border: 2px solid red;
+    border: 3px solid red;
 }
