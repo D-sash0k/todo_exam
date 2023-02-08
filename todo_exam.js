@@ -1,4 +1,4 @@
-const wrapperItems = document.querySelector(".wrapper_items");
+const wrapperItems = document.querySelector(".items_place");
 const writeInput = document.querySelector(".write_text");
 const buttonAdd = document.querySelector(".add_btn");
 
@@ -38,53 +38,61 @@ const getImageValue = (status) => {
 let todoList = [];
 
 const displayTodoList = () => {
-    let display = "";
-    if (todoList.length === 0) wrapperItems.innerHTML = "";
-    todoList.forEach(function (item) {
-        const imageValue = getImageValue(item.status);
-        display += `
-        <li class="todo_item" id="${item.id}">
+    if (todoList.length === 0) {
+        wrapperItems.innerHTML = "";
+        return;
+    }
+    
+    wrapperItems.innerHTML = todoList.reduce((previousValue, currentValue) => {
+        const imageValue = getImageValue(currentValue.status);
+        return (previousValue += `
+        <li class="todo_item" id="${currentValue.id}">
             <div class="for_img">
                 <img class="img_color"
                     src="${imageValue.src}"
                     alt="${imageValue.alt}"/>    
             </div>
             <select class="select_status" onchange="changeItemStatus(this)">
-                <option ${item.status === statuses.hold ? "selected" : " "}
+                <option ${
+                    currentValue.status === statuses.hold ? "selected" : " "
+                }
                     value="${statuses.hold}">${statuses.hold}</option>
-                <option ${item.status === statuses.progress ? "selected" : " "} 
+                <option ${
+                    currentValue.status === statuses.progress ? "selected" : " "
+                } 
                     value="${statuses.progress}">${statuses.progress}</option>
-                <option ${item.status === statuses.done ? "selected" : " "}  
+                <option ${
+                    currentValue.status === statuses.done ? "selected" : " "
+                }  
                     value="${statuses.done}">${statuses.done}</option> 
             </select>
-            <p class="text_task">${item.name}</p>
+            <p class="text_task">${currentValue.name}</p>
             <div class="status_color" style="${imageValue.levelColor}">
                 ${imageValue.level}</div>
             <img class="imagine" src="./img/img_basked.jpg" />
-        </li>`;
-        wrapperItems.innerHTML = display;
-    });
+        </li>`);
+    }, "");
 };
 
-const localAllStorage = {
-    setTodoList: (list) => {
-        localStorage.setItem("todo", JSON.stringify(list));
-    },
-    getTodoList: () => {
-        return JSON.parse(localStorage.getItem("todo"));
-    },
+const localStorageActions = {
+    setTodoList: (list) => localStorage.setItem("todo", JSON.stringify(list)),
+    getTodoList: () =>
+        localStorage.todo ? JSON.parse(localStorage.getItem("todo")) : "",
 };
 
 const changeItemStatus = (event) => {
     const status = event.value;
     const itemId = event.parentElement.id;
-    const currentItem = todoList.find((item) => {
-        return item.id === itemId;
-    });
-    !currentItem && alert("Not found currentItem");
+    const currentItem = todoList.find((item) => item.id === itemId);
+
+    if (!currentItem) {
+        alert("Not found currentItem");
+        return;
+    }
+
     currentItem.status = status;
     displayTodoList();
-    localAllStorage.setTodoList(todoList);
+    localStorageActions.setTodoList(todoList);
 };
 
 const watchSelect = (e) => {
@@ -108,9 +116,10 @@ const addItemWithButton = () => {
         status: statuses.hold,
         id: "todoItem_" + Math.random(),
     };
+
     todoList.push(todoItem);
     displayTodoList();
-    localAllStorage.setTodoList(todoList);
+    localStorageActions.setTodoList(todoList);
     writeInput.value = "";
 };
 const addItemWithEnter = (e) => {
@@ -119,18 +128,19 @@ const addItemWithEnter = (e) => {
 
 const deleteItem = (e) => {
     if (!e.target.closest(".imagine")) return;
+
     const elementLi = e.target.parentElement;
     let deleteItem = todoList.findIndex((item) => {
         return item.id === elementLi.id;
     });
     elementLi.remove();
     todoList.splice(deleteItem, 1);
-    localAllStorage.setTodoList(todoList);
+    localStorageActions.setTodoList(todoList);
 };
 
 // initial render
-if (localStorage.todo) {
-    todoList = localAllStorage.getTodoList();
+{
+    todoList = localStorageActions.getTodoList();
     displayTodoList();
 }
 
